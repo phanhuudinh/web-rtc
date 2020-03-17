@@ -1,24 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useRef, useEffect } from 'react';
 import './App.css';
 
+async function playVideoFromCamera(videoElement) {
+  try {
+    const constraints = { 'video': true, 'audio': false };
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    // const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
+    videoElement.srcObject = stream;
+  } catch (error) {
+    console.error('Error opening video camera.', error);
+  }
+}
+
 function App() {
+  const video = useRef()
+  useEffect(() => {
+    playVideoFromCamera(video.current);
+  }, [])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <video ref={video} autoPlay playsInline controls={false} />
     </div>
   );
 }
